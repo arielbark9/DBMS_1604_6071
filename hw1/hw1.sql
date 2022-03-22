@@ -1,36 +1,58 @@
+<--Drop TABLE Branch CASCADE CONSTRAINTS;
+<--Drop TABLE Permanent_Equipment;
+<--Drop TABLE Renewing_Equipment;
+<--Drop TABLE Equipment;
+<--Drop TABLE Worker;
+
+
 CREATE TABLE Branch
 (
-  ID INT NOT NULL,
-  location INT NOT NULL,
+  ID INT,
+  location Varchar(20) NOT NULL,
   yearStart INT NOT NULL,
   PRIMARY KEY (ID)
 );
 
-CREATE TABLE Permanent-Equipment
+CREATE TABLE Equipment
 (
-  ID INT NOT NULL,
-  lastMaintenance INT NOT NULL,
+  ID INT,
+  equipmentName Varchar(20),
   PRIMARY KEY (ID)
 );
 
-CREATE TABLE Renewing-Equipment
+CREATE TABLE Permanent_Equipment
 (
-  ID INT NOT NULL,
-  lastRenew INT NOT NULL,
-  PRIMARY KEY (ID)
+  ID INT,
+  branchID INT NOT NULL,
+  equipmentID INT NOT NULL,
+  lastMaintenance Date,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (branchID) REFERENCES Branch(ID),
+  FOREIGN KEY (equipmentID) REFERENCES Equipment(ID)
+);
+
+CREATE TABLE Renewing_Equipment
+(
+  ID INT,
+  lastRenew Date,
+  branchID INT NOT NULL,
+  equipmentID INT NOT NULL,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (branchID) REFERENCES Branch(ID),
+  FOREIGN KEY (equipmentID) REFERENCES Equipment(ID)
 );
 
 CREATE TABLE Worker
 (
-  ID INT NOT NULL,
-  type INT NOT NULL,
-  citizenship INT NOT NULL,
-  gender INT NOT NULL,
-  startDate INT NOT NULL,
-  birthDate INT NOT NULL,
-  ID INT NOT NULL,
-  ManagesID INT NOT NULL,
+  ID INT,
+  workerType Varchar(20),
+  citizenship Varchar(20),
+  gender Char,
+  startDate Date NOT NULL,
+  birthDate Date NOT NULL,
+  branchID INT NOT NULL,
+  manager INT not null,
   PRIMARY KEY (ID),
-  FOREIGN KEY (ID) REFERENCES Branch(ID),
-  FOREIGN KEY (ManagesID) REFERENCES Branch(ID)
+  FOREIGN KEY (branchID) REFERENCES Branch(ID),
+  Check(gender = 'M' OR gender = 'F')
 );
