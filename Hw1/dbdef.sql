@@ -16,16 +16,16 @@ CREATE TABLE Branch
 CREATE TABLE Equipment
 (
   ID INT,
-  equipmentName Varchar(20),
+  catalogueNumber Varchar(20),
   PRIMARY KEY (ID)
 );
 
 CREATE TABLE Permanent_Equipment
 (
   ID INT,
+  lastMaintenance Date,
   branchID INT NOT NULL,
   equipmentID INT NOT NULL,
-  lastMaintenance Date,
   PRIMARY KEY (ID),
   FOREIGN KEY (branchID) REFERENCES Branch(ID),
   FOREIGN KEY (equipmentID) REFERENCES Equipment(ID)
@@ -56,11 +56,3 @@ CREATE TABLE Worker
   FOREIGN KEY (branchID) REFERENCES Branch(ID),
   Check(gender = 'M' OR gender = 'F')
 );
-
-
-
-
-
-
-
-
