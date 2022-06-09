@@ -1,9 +1,9 @@
 create or replace function needToRenewEq(branch_ID in number) return integer is
 
   cursor EquipmentInBranch is
-  select *
-  from barkalif.branch join barkalif.renewing_equipment on renewing_equipment.branchid = branch.id
-  where branchid = Branch_id;
+  select re.id, re.lastrenew, re.branchid
+  from barkalif.branch b join barkalif.renewing_equipment re on re.branchid = b.id
+  where b.id = Branch_id;
 
   counter number;
   unValidInput exception;
@@ -16,8 +16,9 @@ begin
     loop
       if CURRENT_DATE > row_.lastrenew then 
          counter := counter +1;
-          updateDateForEquipment(equipment_id_in => row_.equipmentid); -- use of another procedure
+          updateDateForEquipment(Requipment_id_in => row_.id); -- use of another procedure
           flag := false;
+          commit;
       end if;
     end loop;
     if flag = true
@@ -40,15 +41,3 @@ begin
 end needToRenewEq;
 
 
-/*
-declare
-
-x number;
-begin 
- -- x := needToRenewEq(branch_ID => &<name="branch id">);
-    x := needToRenewEq(branch_ID => 900);
-    dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    dbms_output.put_line('function res: ' || x);
-  end;
-*/
