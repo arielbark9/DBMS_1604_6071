@@ -1,6 +1,6 @@
 create or replace function needToRenewEq(branch_ID in number) return integer is
 
-  cursor workerInBranch is
+  cursor EquipmentInBranch is
   select *
   from barkalif.branch join barkalif.renewing_equipment on renewing_equipment.branchid = branch.id
   where branchid = Branch_id;
@@ -10,15 +10,15 @@ create or replace function needToRenewEq(branch_ID in number) return integer is
   nothingToDo exception;
   flag boolean ;
 begin
-  flag := false;
+  flag := true;
     counter := 0;
-  for row_ in workerInBranch
+  for row_ in EquipmentInBranch
     loop
       if CURRENT_DATE > row_.lastrenew then 
-      counter := counter +1;
-       updateDateForEquipment(equipment_id_in => row_.equipmentid); -- use of another procedure
+         counter := counter +1;
+          updateDateForEquipment(equipment_id_in => row_.equipmentid); -- use of another procedure
+          flag := false;
       end if;
-      flag := true;
     end loop;
     if flag = true
       then 
@@ -39,14 +39,16 @@ begin
       return(-1);
 end needToRenewEq;
 
+
 /*
 declare
+
 x number;
 begin 
-  x := needToRenewEq(branch_ID => &<name="branch id">);
-      dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+ -- x := needToRenewEq(branch_ID => &<name="branch id">);
+    x := needToRenewEq(branch_ID => 900);
     dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-  dbms_output.put_line('function res: ' || x);
+    dbms_output.put_line('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    dbms_output.put_line('function res: ' || x);
   end;
 */
-/
